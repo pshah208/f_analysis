@@ -4,7 +4,6 @@ import json
 import yfinance as yf
 from yahooquery import Ticker
 import openai
-import constants
 import streamlit as st
 import matplotlib.pyplot as plt
 from financial_analyst import financial_analyst
