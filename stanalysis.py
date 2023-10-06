@@ -6,7 +6,7 @@ from yahooquery import Ticker
 import openai
 import streamlit as st
 import matplotlib.pyplot as plt
-from financial_analyst import financial_analyst
+
 
 # Get an OpenAI API Key before continuing
 if "openai_api_key" in st.secrets:
@@ -181,7 +181,7 @@ def financial_analyst(request):
 
         return second_response["choices"][0]["message"]["content"]
 
-
+from financial_analyst import financial_analyst
 
 def main():
     st.title("AI Financial Analyst App")
