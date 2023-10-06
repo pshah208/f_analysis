@@ -181,7 +181,6 @@ def financial_analyst(request):
 
         return second_response["choices"][0]["message"]["content"]
 
-from financial_analyst import financial_analyst
 
 def main():
     st.title("AI Financial Analyst App")
