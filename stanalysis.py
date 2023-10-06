@@ -183,6 +183,7 @@ def financial_analyst(request):
         return second_response["choices"][0]["message"]["content"]
 
 from stanalysis import financial_analyst
+from stanalysis 
 
 def main():
     st.title("AI Financial Analyst App")
@@ -194,7 +195,7 @@ def main():
         if company_name:
             st.write("Analyzing... Please wait.")
 
-            investment_thesis, hist = financial_analyst(company_name)
+            investment_thesis = financial_analyst(company_name)
 
             # Select 'Open' and 'Close' columns from the hist dataframe
             hist_selected = hist[['Open', 'Close']]
