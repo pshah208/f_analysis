@@ -183,7 +183,6 @@ def financial_analyst(request):
         return second_response["choices"][0]["message"]["content"]
 
 from stanalysis import financial_analyst
-from stanalysis 
 
 def main():
     st.title("AI Financial Analyst App")
