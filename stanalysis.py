@@ -216,10 +216,6 @@ def main():
             st.markdown(investment_thesis, unsafe_allow_html=True)
         else:
             st.write("Please enter the company name.")
-while True:
-    user_question = input("Enter your investment request:\n\n")
-
-    if user_question == 'exit':
-        break
-
-    print(financial_analyst(user_question))
+            
+if __name__ == "__main__":
+    main()
