@@ -4,4 +4,3 @@ serpapi
 yfinance
 yahooquery
 matplot
-financial_analyst
