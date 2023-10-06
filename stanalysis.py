@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import constants
 
 # Get an OpenAI API Key before continuing
+os.environ["OPENAI_API_KEY"] = constants.APIKEY
 os.environ["SERPAPI_API_KEY"] = constants.SERPAPI_API_KEY
 openai.api_key = constants.APIKEY
 
