@@ -6,12 +6,19 @@ from yahooquery import Ticker
 import openai
 import streamlit as st
 import matplotlib.pyplot as plt
-import constants
+
 
 # Get an OpenAI API Key before continuing
-os.environ["OPENAI_API_KEY"] = constants.APIKEY
-os.environ["SERPAPI_API_KEY"] = constants.SERPAPI_API_KEY
-openai.api_key = constants.APIKEY
+if "openai_api_key" in st.secrets:
+    openai_api_key = st.secrets.openai_api_key
+else:
+    openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
+if not openai_api_key:
+    st.info("Enter an OpenAI API Key to continue")
+    st.stop()
+llm = ChatOpenAI(openai_api_key=openai_api_key)
+os.environ["SERPAPI_API_KEY"] = "628927ea076bdd9ee6365b1be3d5e282743be3e0"
+openai.api_key = open_api_key
 
 def get_company_news(company_name):
     params = {
