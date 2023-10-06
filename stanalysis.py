@@ -195,7 +195,7 @@ def main():
         if company_name:
             st.write("Analyzing... Please wait.")
 
-            investment_thesis = financial_analyst(company_name)
+            investment_thesis, hist = financial_analyst(company_name)
 
             # Select 'Open' and 'Close' columns from the hist dataframe
             hist_selected = hist[['Open', 'Close']]
