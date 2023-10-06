@@ -186,7 +186,7 @@ from stanalysis import financial_analyst
 def main():
     st.title("AI Financial Analyst App")
 
-    company_name = st.text_input("Company name:")
+    company_name = st.text_input("Ask me about a Company:")
     analyze_button = st.button("Analyze")
 
     if analyze_button:
