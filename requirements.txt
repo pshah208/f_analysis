@@ -1,0 +1,8 @@
+openai
+streamlit
+serpapi
+yfinance
+yahooquery
+googlesearch
+matplot
+financial_analyst
