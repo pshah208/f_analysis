@@ -17,7 +17,7 @@ if not openai_api_key:
     st.info("Enter an OpenAI API Key to continue")
     st.stop()
 
-os.environ["SERPAPI_API_KEY"] = "628927ea076bdd9ee6365b1be3d5e282743be3e0"
+os.environ["SERPAPI_API_KEY"] = ""
 openai.api_key = openai_api_key
 
 def get_company_news(company_name):
