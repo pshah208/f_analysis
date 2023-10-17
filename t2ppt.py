@@ -7,13 +7,13 @@ import os
 
 # Get an OpenAI API Key before continuing
 if "openai_api_key" in st.secrets:
-    openai_api_key = st.secrets.openai_api_key
+    openai.api_key = st.secrets.openai_api_key
 else:
-    openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
+    openai.api_key = st.sidebar.text_input("OpenAI API Key", type="password")
 if not openai_api_key:
     st.info("Enter an OpenAI API Key to continue")
     st.stop()
-openai.api_key = openai_api_key
+
 
 # Define custom formatting options
 TITLE_FONT_SIZE = Pt(30)
