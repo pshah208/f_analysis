@@ -23,20 +23,20 @@ SLIDE_FONT_SIZE = Pt(16)
 def generate_slide_titles(topic):
     prompt = f"Generate 5 slide titles for the topic '{topic}'."
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-0613",
+        model="text-davinci-003",
         prompt=prompt,
         max_tokens=200,
     )
-    return response['choices'][0]['messages'].split("\n")
+    return response['choices'][0]['text'].split("\n")
 
 def generate_slide_content(slide_title):
     prompt = f"Generate content for the slide: '{slide_title}'."
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-0613",
+        model="text-davinci-003",
         prompt=prompt,
         max_tokens=500,  # Adjust as needed based on the desired content length
     )
-    return response['choices'][0]['messages']
+    return response['choices'][0]['text']
 
 
 def create_presentation(topic, slide_titles, slide_contents):
