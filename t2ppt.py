@@ -60,7 +60,7 @@ def create_presentation(topic, slide_titles, slide_contents):
                 for paragraph in text_frame.paragraphs:
                     paragraph.font.size = SLIDE_FONT_SIZE
 
-    prs.save(f"generated_ppt/{topic}_presentation.pptx")
+    prs.save(f"doc/{topic}_presentation.pptx")
     
 
 def main():
