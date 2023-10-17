@@ -83,7 +83,7 @@ def main():
         st.markdown(get_ppt_download_link(topic), unsafe_allow_html=True)
 
 def get_ppt_download_link(topic):
-    ppt_filename = f"generated_ppt/{topic}_presentation.pptx"
+    ppt_filename = f"doc/{topic}_presentation.pptx"
 
     with open(ppt_filename, "rb") as file:
         ppt_contents = file.read()
