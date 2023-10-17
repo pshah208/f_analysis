@@ -5,10 +5,14 @@ import pptx
 from pptx.util import Inches, Pt
 import os
 
-from dotenv import load_dotenv
-load_dotenv()
-
-openai.api_key = os.getenv('OPENAI_API_KEY')  # Replace with your actual API key
+# Get an OpenAI API Key before continuing
+if "openai_api_key" in st.secrets:
+    openai_api_key = st.secrets.openai_api_key
+else:
+    openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
+if not openai_api_key:
+    st.info("Enter an OpenAI API Key to continue")
+    st.stop()
 
 # Define custom formatting options
 TITLE_FONT_SIZE = Pt(30)
