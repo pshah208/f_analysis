@@ -27,7 +27,7 @@ def generate_slide_titles(topic):
         prompt=prompt,
         max_tokens=200,
     )
-    return response['choices'][0]['text'].split("\n")
+    return response['choices'][0]['messages'].split("\n")
 
 def generate_slide_content(slide_title):
     prompt = f"Generate content for the slide: '{slide_title}'."
@@ -36,7 +36,7 @@ def generate_slide_content(slide_title):
         prompt=prompt,
         max_tokens=500,  # Adjust as needed based on the desired content length
     )
-    return response['choices'][0]['text']
+    return response['choices'][0]['messages']
 
 
 def create_presentation(topic, slide_titles, slide_contents):
