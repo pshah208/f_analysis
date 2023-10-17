@@ -4,7 +4,8 @@ import openai
 import pptx
 from pptx.util import Inches, Pt
 import os
-
+from dotenv import load_dotenv
+load_dotenv()
 # Get an OpenAI API Key before continuing
 if "openai_api_key" in st.secrets:
     openai.api_key = st.secrets.openai_api_key
@@ -22,7 +23,7 @@ SLIDE_FONT_SIZE = Pt(16)
 
 def generate_slide_titles(topic):
     prompt = f"Generate 5 slide titles for the topic '{topic}'."
-    response = openai.ChatCompletion.create(
+    response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
         max_tokens=200,
@@ -31,7 +32,7 @@ def generate_slide_titles(topic):
 
 def generate_slide_content(slide_title):
     prompt = f"Generate content for the slide: '{slide_title}'."
-    response = openai.ChatCompletion.create(
+    response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
         max_tokens=500,  # Adjust as needed based on the desired content length
