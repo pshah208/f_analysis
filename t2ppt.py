@@ -94,7 +94,7 @@ def create_presentation(topic, slide_titles, slide_contents):
 def main():
     st.title("PPT Generator - Acharya")
 
-    topic = st.text_input("Enter the topic for your presentation:")
+    
     generate_button = st.button("Generate Presentation")
 
     if generate_button and topic:
