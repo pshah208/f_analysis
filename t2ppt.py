@@ -46,8 +46,8 @@ relevant_chunks = vectorstore.similarity_search(topic)
 
 
 
-def generate_slide_titles(topic, vectorstore):
-    prompt = f"Generate 5 slide titles for the topic '{topic}' by searching relevant information only in vectorstore: '{vectorstore}'."
+def generate_slide_titles(topic, documents):
+    prompt = f"Generate 5 slide titles for the topic '{topic}' by searching relevant information only in local documents: '{documents}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
@@ -96,7 +96,7 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic, vectorstore)
+        slide_titles = generate_slide_titles(topic, documents)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
         slide_contents = [generate_slide_content(title, relevant_chunks) for title in filtered_slide_titles]
