@@ -38,16 +38,17 @@ splitter = RecursiveCharacterTextSplitter(
 
 documents = splitter.split_documents(docs)
 
+persist_directory = 'db2'
  # Create vector embeddings and store them in a vector database
-vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
+vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key), persist_directory=persist_directory)                                   
     
 topic = st.text_input("Enter the topic for your presentation:")
-relevant_chunks = vectorstore.similarity_search(topic)
+
+retriever= vectorstore.as_retriever(k=3, filter=None)
 
 
-
-def generate_slide_titles(topic, documents):
-    prompt = f"Generate 5 slide titles for the topic '{topic}' by searching relevant information only in local documents: '{documents}'."
+def generate_slide_titles(topic, db2):
+    prompt = f"Generate 5 slide titles for the topic '{topic}' by searching relevant information only in local database: '{db2}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
@@ -55,8 +56,8 @@ def generate_slide_titles(topic, documents):
     )
     return response['choices'][0]['text'].split("\n")
 
-def generate_slide_content(slide_title, relevant_chunks):
-    prompt = f"Generate content for the slide: '{slide_title}' and use retriever to search for conent only from local chunks: '{relevant_chunks}'."
+def generate_slide_content(slide_title, retriever):
+    prompt = f"Generate content for the slide: '{slide_title}' and use retriever to search for conent in db2: '{retriever}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
@@ -96,10 +97,10 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic, documents)
+        slide_titles = generate_slide_titles(topic, db2)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
-        slide_contents = [generate_slide_content(title, relevant_chunks) for title in filtered_slide_titles]
+        slide_contents = [generate_slide_content(title, retriever) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
