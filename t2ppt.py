@@ -122,7 +122,7 @@ def main():
         slide_titles = generate_slide_titles(topic)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
-        slide_contents = [generate_slide_content(title, retriever) for title in filtered_slide_titles]
+        slide_contents = [generate_slide_content(title, documents) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
