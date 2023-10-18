@@ -16,3 +16,4 @@ pysqlite3-binary
 pypdf
 serpapi
 python-pptx
+sqlite3 >= 3.35.0
