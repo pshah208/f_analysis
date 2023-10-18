@@ -43,7 +43,7 @@ def creating_db(topic):
  # Create vector embeddings and store them in a vector database
  vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
  return vectorstore
-
+topic = st.text_input("Enter the topic for your presentation:")
 vectorstore = creating_db(topic)
 #Retriever
 retriever = vectorstore.as_retriever(k=3, filter=None)
