@@ -20,6 +20,7 @@ if not openai.api_key:
     st.info("Enter an OpenAI API Key to continue")
     st.stop()
 
+openai_api_key = openai.api_key
 
 # Define custom formatting options
 TITLE_FONT_SIZE = Pt(30)
