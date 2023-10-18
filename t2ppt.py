@@ -37,7 +37,7 @@ splitter = RecursiveCharacterTextSplitter(
     chunk_overlap=20)
 
 documents = splitter.split_documents(docs)
-documents[0]
+
  # Create vector embeddings and store them in a vector database
 vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
     
