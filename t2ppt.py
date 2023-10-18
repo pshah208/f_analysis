@@ -21,7 +21,7 @@ if not openai.api_key:
     st.info("Enter an OpenAI API Key to continue")
     st.stop()
 
-
+st.title("PPT Generator - Acharya")
 
 # Define custom formatting options
 TITLE_FONT_SIZE = Pt(30)
@@ -43,14 +43,14 @@ def creating_db(topic):
  # Create vector embeddings and store them in a vector database
  vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
  return vectorstore
+    
 topic = st.text_input("Enter the topic for your presentation:")
-vectorstore = creating_db(topic)
-#Retriever
-retriever = vectorstore.as_retriever(k=3, filter=None)
+relevant_chunks = creating_db.similarity_search(topic)
 
 
-def generate_slide_titles(topic, retriever):
-    prompt = f"Generate 5 slide titles for the topic '{topic}' by searching relevant information using '{retriever}'."
+
+def generate_slide_titles(topic, relevant_chunks):
+    prompt = f"Generate 5 slide titles for the topic '{topic}' by searching relevant information using '{relevant_chunks}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
@@ -58,8 +58,8 @@ def generate_slide_titles(topic, retriever):
     )
     return response['choices'][0]['text'].split("\n")
 
-def generate_slide_content(slide_title, retriever):
-    prompt = f"Generate content for the slide: '{slide_title}' and use retriever to search for conent: '{retriever}'."
+def generate_slide_content(slide_title, relevant_chunks):
+    prompt = f"Generate content for the slide: '{slide_title}' and use retriever to search for conent: '{relevant_chunks}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
@@ -92,17 +92,17 @@ def create_presentation(topic, slide_titles, slide_contents):
     
 
 def main():
-    st.title("PPT Generator - Acharya")
-
+    
+    
     
     generate_button = st.button("Generate Presentation")
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic, retriever)
+        slide_titles = generate_slide_titles(topic, relevant_chunks)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
-        slide_contents = [generate_slide_content(title, retriever) for title in filtered_slide_titles]
+        slide_contents = [generate_slide_content(title, relevant_chunks) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
