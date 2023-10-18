@@ -27,25 +27,22 @@ st.title("PPT Generator - Acharya")
 TITLE_FONT_SIZE = Pt(30)
 SLIDE_FONT_SIZE = Pt(16)
 
-#Create Database
-def creating_db(topic):
-    # Load documents from local directory
- loader = DirectoryLoader('./doc/', glob="**/[!.]*")
- docs = loader.load()
+# Load documents from local directory
+loader = DirectoryLoader('./doc/', glob="**/[!.]*")
+docs = loader.load()
 
 
- splitter = RecursiveCharacterTextSplitter(
+splitter = RecursiveCharacterTextSplitter(
     chunk_size=500,
     chunk_overlap=20)
 
- documents = splitter.split_documents(docs)
- documents[0]
+documents = splitter.split_documents(docs)
+documents[0]
  # Create vector embeddings and store them in a vector database
- vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
- return vectorstore
+vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
     
 topic = st.text_input("Enter the topic for your presentation:")
-relevant_chunks = creating_db.similarity_search(topic)
+relevant_chunks = vectorstore.similarity_search(topic)
 
 
 
