@@ -7,6 +7,8 @@ import os
 from dotenv import load_dotenv
 from langchain.document_loaders import DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import Chroma
+from langchain.embeddings import OpenAIEmbeddings
 
 load_dotenv()
 # Get an OpenAI API Key before continuing
@@ -34,18 +36,24 @@ splitter = RecursiveCharacterTextSplitter(
 
 documents = splitter.split_documents(docs)
 documents[0]
+# Create vector embeddings and store them in a vector database
+vectorstore = Chroma.from_documents(documents, embedding=OpenAIEmbeddings())                                   
+
+#Retriever
+retriever = vectorstore.as_retriever(k=3, filter=None)
+
 
 def generate_slide_titles(topic):
-    prompt = f"Generate 5 slide titles for the topic '{topic}' from documents: '{documents}'."
+    prompt = f"Generate 5 slide titles for the topic '{topic}' from documents: '{retriever}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
-        max_tokens=300,
+        max_tokens=100,
     )
     return response['choices'][0]['text'].split("\n")
 
-def generate_slide_content(slide_title, documents):
-    prompt = f"Generate content for the slide: '{slide_title}' and use gather data from: '{documents}'."
+def generate_slide_content(slide_title, retriever):
+    prompt = f"Generate content for the slide: '{slide_title}' and use retriever to search for conent: '{retriever}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
