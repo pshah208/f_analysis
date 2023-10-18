@@ -16,4 +16,4 @@ pysqlite3-binary
 pypdf
 serpapi
 python-pptx
-
+faiss-cpu
