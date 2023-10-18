@@ -46,12 +46,12 @@ vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_
     
 topic = st.text_input("Enter the topic for your presentation:")
 llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k",openai_api_key=openai.api_key)
-retriever= vectorstore.as_retriever(k=3, filter=None)
+retriever= vectorstore.similarity_search(topic, k=4)
 chain = load_summarize_chain(llm, chain_type="stuff")
+cont = chain.run(topic)
 
-
-def generate_slide_titles(topic, chain):
-    prompt = f"Generate 5 slide titles for the topic '{topic}' by searching relevant information in chain: '{chain}'."
+def generate_slide_titles(topic, cont):
+    prompt = f"Generate 5 slide titles for the topic '{cont}' by searching relevant information in chain: '{cont}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
@@ -100,7 +100,7 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic, chain)
+        slide_titles = generate_slide_titles(topic, cont)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
         slide_contents = [generate_slide_content(title, retriever) for title in filtered_slide_titles]
