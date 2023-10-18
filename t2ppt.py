@@ -29,7 +29,7 @@ docs = loader.load()
 
 
 splitter = RecursiveCharacterTextSplitter(
-    chunk_size=300,
+    chunk_size=500,
     chunk_overlap=20)
 
 documents = splitter.split_documents(docs)
