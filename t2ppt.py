@@ -45,11 +45,11 @@ documents = splitter.split_documents(docs)
 vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
    
 topic = st.text_input("Enter the topic for your presentation:")
-retriever= vectorstore.similarity_search(topic, k=4)
+
 
 def generate_slide_titles(topic):
     # Use the retriever to fetch relevant documents from your local vectorstore
-    similar_docs = retriever.similarity_search(topic, k=4)
+    similar_docs = vectorstore.similarity_search(topic, k=4)
 
     # Initialize a list to store the generated slide titles
     slide_titles = []
