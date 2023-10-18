@@ -47,19 +47,33 @@ vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_
 topic = st.text_input("Enter the topic for your presentation:")
 
 
-def generate_slide_titles(topic):
-    # Use the retriever to fetch relevant documents from your local vectorstore
-    similar_docs = vectorstore.similarity_search(topic, k=4)
+def extract_relevant_content(topic, documents):
+    # Use OpenAI to extract relevant content from documents
+    content = []
+    for document in documents:
+        # You can modify this prompt based on your specific use case
+        prompt = f"Extract content from '{document}' related to the topic: '{topic}'"
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=prompt,
+            max_tokens=100,
+        )
+        extracted_content = response.choices[0].text
+        content.append(extracted_content)
 
-    # Initialize a list to store the generated slide titles
+    return content
+
+def generate_slide_titles(content):
+    # Use OpenAI to generate slide titles based on the extracted content
     slide_titles = []
-
-    # Loop through the similar documents and extract titles
-    for doc in similar_docs:
-        # Assuming that the document titles are stored as 'title' in your vectorstore
-        slide_title = doc['document']['title']
-
-        # Append the slide title to the list
+    for text in content:
+        prompt = f"Generate slide titles for the following content: '{text}'"
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=prompt,
+            max_tokens=100,
+        )
+        slide_title = response.choices[0].text
         slide_titles.append(slide_title)
 
     return slide_titles
@@ -105,7 +119,7 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic)
+        slide_titles = generate_slide_titles(content)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
         slide_contents = [generate_slide_content(title, retriever) for title in filtered_slide_titles]
