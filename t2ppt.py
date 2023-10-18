@@ -5,6 +5,9 @@ import pptx
 from pptx.util import Inches, Pt
 import os
 from dotenv import load_dotenv
+from langchain.document_loaders import DirectoryLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
 load_dotenv()
 # Get an OpenAI API Key before continuing
 if "openai_api_key" in st.secrets:
@@ -20,9 +23,20 @@ if not openai.api_key:
 TITLE_FONT_SIZE = Pt(30)
 SLIDE_FONT_SIZE = Pt(16)
 
+# Load documents from local directory
+loader = DirectoryLoader('./doc/', glob="**/[!.]*")
+docs = loader.load()
 
-def generate_slide_titles(topic):
-    prompt = f"Generate 5 slide titles for the topic '{topic}'."
+
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=20)
+
+documents = splitter.split_documents(docs)
+documents[0]
+
+def generate_slide_titles(topic, documents):
+    prompt = f"Generate 5 slide titles for the topic '{topic}' from documents: '{documents}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
@@ -30,8 +44,8 @@ def generate_slide_titles(topic):
     )
     return response['choices'][0]['text'].split("\n")
 
-def generate_slide_content(slide_title):
-    prompt = f"Generate content for the slide: '{slide_title}'."
+def generate_slide_content(slide_title, documents):
+    prompt = f"Generate content for the slide: '{slide_title}' and use gather data from: '{documents}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
