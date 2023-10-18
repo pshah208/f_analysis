@@ -40,7 +40,7 @@ documents = splitter.split_documents(docs)
 
 persist_directory = 'db2'
  # Create vector embeddings and store them in a vector database
-vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key), persist_directory=persist_directory)                                   
+vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
     
 topic = st.text_input("Enter the topic for your presentation:")
 
