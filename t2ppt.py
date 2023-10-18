@@ -64,7 +64,7 @@ def create_presentation(topic, slide_titles, slide_contents):
     
 
 def main():
-    st.title("PowerPoint Presentation Generator with GPT-3.5-turbo")
+    st.title("PPT Generator - Acharya")
 
     topic = st.text_input("Enter the topic for your presentation:")
     generate_button = st.button("Generate Presentation")
