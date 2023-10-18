@@ -45,19 +45,24 @@ documents = splitter.split_documents(docs)
 vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
     
 topic = st.text_input("Enter the topic for your presentation:")
-llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k",openai_api_key=openai.api_key)
-retriever= vectorstore.similarity_search(topic, k=4)
-chain = load_summarize_chain(llm, chain_type="stuff")
-cont = chain.run(topic)
 
-def generate_slide_titles(topic, cont):
-    prompt = f"Generate 5 slide titles for the topic '{cont}' by searching relevant information in chain: '{cont}'."
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=prompt,
-        max_tokens=100,
-    )
-    return response['choices'][0]['text'].split("\n")
+
+def generate_slide_titles(topic):
+    # Use the retriever to fetch relevant documents from your local vectorstore
+    similar_docs = retriever.similarity_search(topic, k=4)
+
+    # Initialize a list to store the generated slide titles
+    slide_titles = []
+
+    # Loop through the similar documents and extract titles
+    for doc in similar_docs:
+        # Assuming that the document titles are stored as 'title' in your vectorstore
+        slide_title = doc['document']['title']
+
+        # Append the slide title to the list
+        slide_titles.append(slide_title)
+
+    return slide_titles
 
 def generate_slide_content(slide_title, retriever):
     prompt = f"Generate content for the slide: '{slide_title}' and use retriever to search for content in database: '{retriever}'."
@@ -100,7 +105,7 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic, cont)
+        slide_titles = generate_slide_titles(topic)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
         slide_contents = [generate_slide_content(title, retriever) for title in filtered_slide_titles]
