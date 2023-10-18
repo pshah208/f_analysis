@@ -78,8 +78,8 @@ def generate_slide_titles(content):
 
     return slide_titles
 
-def generate_slide_content(slide_title, retriever):
-    prompt = f"Generate content for the slide: '{slide_title}' and use retriever to search for content in database: '{retriever}'."
+def generate_slide_content(slide_title, documents):
+    prompt = f"Generate content for the slide: '{slide_title}' and retrieve information from documents: '{documents}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
