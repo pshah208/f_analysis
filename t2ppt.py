@@ -35,7 +35,7 @@ splitter = RecursiveCharacterTextSplitter(
 documents = splitter.split_documents(docs)
 documents[0]
 
-def generate_slide_titles(topic, documents):
+def generate_slide_titles(topic):
     prompt = f"Generate 5 slide titles for the topic '{topic}' from documents: '{documents}'."
     response = openai.Completion.create(
         model="text-davinci-003",
