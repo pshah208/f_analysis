@@ -29,7 +29,7 @@ docs = loader.load()
 
 
 splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1000,
+    chunk_size=300,
     chunk_overlap=20)
 
 documents = splitter.split_documents(docs)
@@ -40,7 +40,7 @@ def generate_slide_titles(topic):
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
-        max_tokens=200,
+        max_tokens=300,
     )
     return response['choices'][0]['text'].split("\n")
 
