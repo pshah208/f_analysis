@@ -27,20 +27,24 @@ if not openai.api_key:
 TITLE_FONT_SIZE = Pt(30)
 SLIDE_FONT_SIZE = Pt(16)
 
-# Load documents from local directory
-loader = DirectoryLoader('./doc/', glob="**/[!.]*")
-docs = loader.load()
+#Create Database
+def creating_db(topic):
+    # Load documents from local directory
+ loader = DirectoryLoader('./doc/', glob="**/[!.]*")
+ docs = loader.load()
 
 
-splitter = RecursiveCharacterTextSplitter(
+ splitter = RecursiveCharacterTextSplitter(
     chunk_size=500,
     chunk_overlap=20)
 
-documents = splitter.split_documents(docs)
-documents[0]
-# Create vector embeddings and store them in a vector database
-vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
+ documents = splitter.split_documents(docs)
+ documents[0]
+ # Create vector embeddings and store them in a vector database
+ vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
+ return vectorstore
 
+vectorstore = creating_db(topic)
 #Retriever
 retriever = vectorstore.as_retriever(k=3, filter=None)
 
