@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from langchain.document_loaders import DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
+from langchain.vectorstores import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 
 load_dotenv()
@@ -38,7 +39,7 @@ splitter = RecursiveCharacterTextSplitter(
 documents = splitter.split_documents(docs)
 documents[0]
 # Create vector embeddings and store them in a vector database
-vectorstore = Chroma.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
+vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
 
 #Retriever
 retriever = vectorstore.as_retriever(k=3, filter=None)
