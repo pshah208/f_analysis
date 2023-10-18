@@ -20,7 +20,7 @@ if not openai.api_key:
     st.info("Enter an OpenAI API Key to continue")
     st.stop()
 
-OPENAI_API_KEY = openai.api_key
+
 
 # Define custom formatting options
 TITLE_FONT_SIZE = Pt(30)
@@ -38,7 +38,7 @@ splitter = RecursiveCharacterTextSplitter(
 documents = splitter.split_documents(docs)
 documents[0]
 # Create vector embeddings and store them in a vector database
-vectorstore = Chroma.from_documents(documents, embedding=OpenAIEmbeddings())                                   
+vectorstore = Chroma.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
 
 #Retriever
 retriever = vectorstore.as_retriever(k=3, filter=None)
