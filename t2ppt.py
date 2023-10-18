@@ -45,7 +45,7 @@ documents = splitter.split_documents(docs)
 vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
    
 topic = st.text_input("Enter the topic for your presentation:")
-
+retriever = vectorstore.as_retriever(k=4)
 
 def extract_relevant_content(topic, documents):
     # Use OpenAI to extract relevant content from documents
@@ -78,8 +78,8 @@ def generate_slide_titles(content):
 
     return slide_titles
 
-def generate_slide_content(slide_title, documents):
-    prompt = f"Generate content for the slide: '{slide_title}' and retrieve information from documents: '{documents}'."
+def generate_slide_content(slide_title, retriever):
+    prompt = f"Generate content for the slide: '{slide_title}' and retrieve information from documents: '{retriever}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
@@ -122,7 +122,7 @@ def main():
         slide_titles = generate_slide_titles(topic)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
-        slide_contents = [generate_slide_content(title, documents) for title in filtered_slide_titles]
+        slide_contents = [generate_slide_content(title, retriever) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
