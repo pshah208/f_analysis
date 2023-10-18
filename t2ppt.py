@@ -46,7 +46,7 @@ retriever = vectorstore.as_retriever(k=3, filter=None)
 
 
 def generate_slide_titles(topic):
-    prompt = f"Generate 5 slide titles for the topic '{topic}' from documents: '{retriever}'."
+    prompt = f"Generate 5 slide titles for the topic '{topic}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
