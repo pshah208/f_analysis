@@ -48,8 +48,8 @@ vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_
 #Retriever
 retriever = vectorstore.as_retriever(k=3, filter=None)
 
-def generate_slide_titles(topic):
-    prompt = f"Generate 5 slide titles for '{topic}' by only using local database with help of retriever: '{retriever}'."
+def generate_slide_titles(topic, vectorstore):
+    prompt = f"Generate 5 slide titles for '{topic}' by only using local database'{vectorstore}'."
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt, 
@@ -57,8 +57,8 @@ def generate_slide_titles(topic):
     )
     return response['choices'][0]['text'].split("\n")
 
-def generate_slide_content(slide_title):
-    prompt = f"Create content for : '{slide_title}' by using content only from documents with help of Retriever."
+def generate_slide_content(slide_title, retriever):
+    prompt = f"Create content for : '{slide_title}' by using content only from documents with help of Retriever: '{retriever}'."
     response = openai.Completion.create(
         model="text-davinci-003", 
         prompt=prompt,
@@ -98,10 +98,10 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic, retriever)
+        slide_titles = generate_slide_titles(topic, vectorstore)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
-        slide_contents = [generate_slide_content(title) for title in filtered_slide_titles]
+        slide_contents = [generate_slide_content(title, retriever) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
