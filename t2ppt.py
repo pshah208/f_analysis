@@ -55,10 +55,10 @@ for document in documents:
     documents_json.append(doc_dict)
 
 # Convert list to JSON string 
-documents_json = json.dumps(documents_json)
+doc_json = json.dumps(documents_json)
 
-def generate_slide_titles(topic, documents_json):
-    prompt = f"Generate 5 slide titles for topic '{topic}' by using documents: '{documents_json}'."
+def generate_slide_titles(topic, doc_json):
+    prompt = f"Generate 5 slide titles for '{topic}' using documents: '{doc_json}'."
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt, 
@@ -66,8 +66,8 @@ def generate_slide_titles(topic, documents_json):
     )
     return response['choices'][0]['text'].split("\n")
 
-def generate_slide_content(slide_title, documents_json):
-    prompt = f"Generate content for slides: '{slide_title}' from documents: '{documents_json}'."
+def generate_slide_content(slide_title, doc_json):
+    prompt = f"Create content : '{slide_title}' from documents: '{doc_json}'."
     response = openai.Completion.create(
         model="text-davinci-003", 
         prompt=prompt,
@@ -107,10 +107,10 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic, documents_json)
+        slide_titles = generate_slide_titles(topic, doc_json)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
-        slide_contents = [generate_slide_content(title, documents_json) for title in filtered_slide_titles]
+        slide_contents = [generate_slide_content(title, doc_json) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
