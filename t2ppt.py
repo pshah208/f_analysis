@@ -13,6 +13,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
 from langchain.chains.summarize import load_summarize_chain
 from langchain.chains import RetrievalQA
+import json
 
 load_dotenv()
 # Get an OpenAI API Key before continuing
@@ -40,28 +41,35 @@ splitter = RecursiveCharacterTextSplitter(
     chunk_overlap=20)
 
 documents = splitter.split_documents(docs)
+# Documents is a list of Document objects
+documents_json = []
 
+for document in documents:
+    # Extract relevant attributes from Document
+    doc_dict = {
+        "page_content": document.page_content,
+        "metadata": document.metadata
+    }
+    
+    # Append to list
+    documents_json.append(doc_dict)
 
- # Create vector embeddings and store them in a vector database
-vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
-   
-topic = st.text_input("Enter the topic for your presentation:")
-retriever = vectorstore.as_retriever(k=1)
-qa = RetrievalQA.from_chain_type(llm=ChatOpenAI(openai_api_key=openai.api_key), chain_type="stuff", retriever=retriever)
+# Convert list to JSON string 
+documents_json = json.dumps(documents_json)
 
 def generate_slide_titles(topic):
-    prompt = f"Generate 5 slide titles for the topic '{topic}' with only using documents from vectorstore."
+    prompt = f"Generate 5 slide titles for the topic '{topic}' by only using internal documents ."
     response = openai.Completion.create(
         engine="text-davinci-003",
-        prompt=prompt, retriever = qa,
+        prompt=prompt, documents_json = documents_json,
         max_tokens=200,
     )
     return response['choices'][0]['text'].split("\n")
 
 def generate_slide_content(slide_title):
-    prompt = f"Generate content for the slide: '{slide_title}' and retrieve information from vectorstore."
+    prompt = f"Generate content for the slide: '{slide_title}' and retrieve information by only using internal documents."
     response = openai.Completion.create(
-        model="text-davinci-003", retriever = qa,
+        model="text-davinci-003", documents_json = documents_json,
         prompt=prompt,
         max_tokens=500,  # Adjust as needed based on the desired content length
     )
