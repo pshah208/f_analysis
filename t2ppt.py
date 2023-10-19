@@ -41,24 +41,10 @@ splitter = RecursiveCharacterTextSplitter(
     chunk_overlap=20)
 
 documents = splitter.split_documents(docs)
-# Documents is a list of Document objects
-documents_json = []
 
-for document in documents:
-    # Extract relevant attributes from Document
-    doc_dict = {
-        "page_content": document.page_content,
-        "metadata": document.metadata
-    }
-    
-    # Append to list
-    documents_json.append(doc_dict)
 
-# Convert list to JSON string 
-doc_json = json.dumps(documents_json)
-
-def generate_slide_titles(topic, doc_json):
-    prompt = f"Generate 5 slide titles for '{topic}' using documents: '{doc_json}'."
+def generate_slide_titles(topic, documents):
+    prompt = f"Generate 5 slide titles for '{topic}' by only using documents: '{documents}'."
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt, 
@@ -66,8 +52,8 @@ def generate_slide_titles(topic, doc_json):
     )
     return response['choices'][0]['text'].split("\n")
 
-def generate_slide_content(slide_title, doc_json):
-    prompt = f"Create content : '{slide_title}' from documents: '{doc_json}'."
+def generate_slide_content(slide_title, documents):
+    prompt = f"Create content : '{slide_title}' by using content only from documents: '{documents}'."
     response = openai.Completion.create(
         model="text-davinci-003", 
         prompt=prompt,
@@ -107,10 +93,10 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic, doc_json)
+        slide_titles = generate_slide_titles(topic, documents)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
-        slide_contents = [generate_slide_content(title, doc_json) for title in filtered_slide_titles]
+        slide_contents = [generate_slide_content(title, documents) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
