@@ -53,7 +53,7 @@ def generate_slide_titles(topic):
     prompt = f"Generate 5 slide titles for the topic '{topic}' with only using documents from vectorstore."
     response = openai.Completion.create(
         engine="text-davinci-003",
-        prompt=prompt, vectorstore = vectorstore,
+        prompt=prompt, retriever = qa,
         max_tokens=200,
     )
     return response['choices'][0]['text'].split("\n")
@@ -61,7 +61,7 @@ def generate_slide_titles(topic):
 def generate_slide_content(slide_title):
     prompt = f"Generate content for the slide: '{slide_title}' and retrieve information from vectorstore."
     response = openai.Completion.create(
-        model="text-davinci-003", vectorstore = vectorstore,
+        model="text-davinci-003", retriever = qa,
         prompt=prompt,
         max_tokens=500,  # Adjust as needed based on the desired content length
     )
