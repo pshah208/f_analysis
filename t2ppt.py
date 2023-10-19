@@ -49,19 +49,19 @@ topic = st.text_input("Enter the topic for your presentation:")
 retriever = vectorstore.as_retriever(k=1)
 qa = RetrievalQA.from_chain_type(llm=ChatOpenAI(openai_api_key=openai.api_key), chain_type="stuff", retriever=retriever)
 
-def generate_slide_titles(topic, vectorstore):
-    prompt = f"Generate 5 slide titles for the topic '{topic}' with only using documents from vectorstore: '{vectorstore}'."
+def generate_slide_titles(topic):
+    prompt = f"Generate 5 slide titles for the topic '{topic}' with only using documents from vectorstore."
     response = openai.Completion.create(
         engine="text-davinci-003",
-        prompt=prompt,
+        prompt=prompt, vectorstore = vectorstore
         max_tokens=200,
     )
     return response['choices'][0]['text'].split("\n")
 
-def generate_slide_content(slide_title, qa):
-    prompt = f"Generate content for the slide: '{slide_title}' and retrieve information from documents: '{qa}'."
+def generate_slide_content(slide_title):
+    prompt = f"Generate content for the slide: '{slide_title}' and retrieve information from vectorstore."
     response = openai.Completion.create(
-        model="text-davinci-003",
+        model="text-davinci-003", vectorstore = vectorstore
         prompt=prompt,
         max_tokens=500,  # Adjust as needed based on the desired content length
     )
@@ -99,10 +99,10 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic, vectorstore)
+        slide_titles = generate_slide_titles(topic)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
-        slide_contents = [generate_slide_content(title, qa) for title in filtered_slide_titles]
+        slide_contents = [generate_slide_content(title) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
