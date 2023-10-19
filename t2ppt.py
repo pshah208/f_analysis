@@ -26,7 +26,7 @@ if not openai.api_key:
     st.stop()
 
 st.title("PPT Generator - Acharya")
-
+topic = st.text_input("Enter the topic for your presentation:")
 # Define custom formatting options
 TITLE_FONT_SIZE = Pt(30)
 SLIDE_FONT_SIZE = Pt(16)
