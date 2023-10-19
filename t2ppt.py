@@ -12,6 +12,7 @@ from langchain.vectorstores import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
 from langchain.chains.summarize import load_summarize_chain
+from langchain.chains import RetrievalQA
 
 load_dotenv()
 # Get an OpenAI API Key before continuing
@@ -45,41 +46,20 @@ documents = splitter.split_documents(docs)
 vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
    
 topic = st.text_input("Enter the topic for your presentation:")
-retriever = vectorstore.as_retriever(k=4)
+retriever = vectorstore.as_retriever(topic)
+qa = RetrievalQA.from_chain_type(llm=OpenAI(openai_api_key=openai.api_key), chain_type="stuff", retriever=retriever)
 
-def extract_relevant_content(topic, documents):
-    # Use OpenAI to extract relevant content from documents
-    content = []
-    for document in documents:
-        # You can modify this prompt based on your specific use case
-        prompt = f"Extract content from '{document}' related to the topic: '{topic}'"
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=prompt,
-            max_tokens=100,
-        )
-        extracted_content = response.choices[0].text
-        content.append(extracted_content)
+def generate_slide_titles(topic, qa):
+    prompt = f"Generate 5 slide titles for the topic '{topic}' and retrieve slide titles with the help of QA: '{qa}'."
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=200,
+    )
+    return response['choices'][0]['text'].split("\n")
 
-    return content
-
-def generate_slide_titles(content):
-    # Use OpenAI to generate slide titles based on the extracted content
-    slide_titles = []
-    for text in content:
-        prompt = f"Generate slide titles for the following content: '{text}'"
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=prompt,
-            max_tokens=100,
-        )
-        slide_title = response.choices[0].text
-        slide_titles.append(slide_title)
-
-    return slide_titles
-
-def generate_slide_content(slide_title, retriever):
-    prompt = f"Generate content for the slide: '{slide_title}' and retrieve information from documents: '{retriever}'."
+def generate_slide_content(slide_title, qa):
+    prompt = f"Generate content for the slide: '{slide_title}' and retrieve information from documents: '{qa}'."
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
@@ -119,10 +99,10 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic)
+        slide_titles = generate_slide_titles(topic, qa)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
-        slide_contents = [generate_slide_content(title, retriever) for title in filtered_slide_titles]
+        slide_contents = [generate_slide_content(title, qa) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
