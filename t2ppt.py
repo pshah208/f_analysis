@@ -43,7 +43,7 @@ splitter = RecursiveCharacterTextSplitter(
 documents = splitter.split_documents(docs)
 
 # Create vector embeddings and store them in a vector database
-vectorstore = Chroma.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
+vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
 
 #Retriever
 retriever = vectorstore.as_retriever(k=3, filter=None)
