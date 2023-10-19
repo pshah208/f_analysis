@@ -48,8 +48,8 @@ vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_
 #Retriever
 retriever = vectorstore.as_retriever(k=3, filter=None)
 
-def generate_slide_titles(topic, retriever):
-    prompt = f"Generate 5 slide titles for '{topic}' by only using documents with help of retriever: '{retriever}'."
+def generate_slide_titles(topic):
+    prompt = f"Generate 5 slide titles for '{topic}' by only using local database with help of retriever: '{retriever}'."
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt, 
