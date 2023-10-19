@@ -57,19 +57,19 @@ for document in documents:
 # Convert list to JSON string 
 documents_json = json.dumps(documents_json)
 
-def generate_slide_titles(topic):
-    prompt = f"Generate 5 slide titles for the topic '{topic}' by only using internal documents ."
+def generate_slide_titles(topic, documents_json):
+    prompt = f"Generate 5 slide titles for the topic '{topic}' by only using internal documents: '{documents_json}'."
     response = openai.Completion.create(
         engine="text-davinci-003",
-        prompt=prompt, vectorstore = documents_json,
+        prompt=prompt, 
         max_tokens=200,
     )
     return response['choices'][0]['text'].split("\n")
 
-def generate_slide_content(slide_title):
-    prompt = f"Generate content for the slide: '{slide_title}' and retrieve information by only using internal documents."
+def generate_slide_content(slide_title, documents_json):
+    prompt = f"Generate content for the slide: '{slide_title}' and retrieve information by only using internal documents: '{documents_json}'."
     response = openai.Completion.create(
-        model="text-davinci-003", vectorstore = documents_json,
+        model="text-davinci-003", 
         prompt=prompt,
         max_tokens=500,  # Adjust as needed based on the desired content length
     )
@@ -107,10 +107,10 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic)
+        slide_titles = generate_slide_titles(topic, documents_json)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
-        slide_contents = [generate_slide_content(title) for title in filtered_slide_titles]
+        slide_contents = [generate_slide_content(title, documents_json) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
