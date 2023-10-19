@@ -58,7 +58,7 @@ for document in documents:
 documents_json = json.dumps(documents_json)
 
 def generate_slide_titles(topic, documents_json):
-    prompt = f"Generate 5 slide titles for the topic '{topic}' by only using internal documents: '{documents_json}'."
+    prompt = f"Generate 5 slide titles for topic '{topic}' by using documents: '{documents_json}'."
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt, 
@@ -67,7 +67,7 @@ def generate_slide_titles(topic, documents_json):
     return response['choices'][0]['text'].split("\n")
 
 def generate_slide_content(slide_title, documents_json):
-    prompt = f"Generate content for the slide: '{slide_title}' and retrieve information by only using internal documents: '{documents_json}'."
+    prompt = f"Generate content for slides: '{slide_title}' from documents: '{documents_json}'."
     response = openai.Completion.create(
         model="text-davinci-003", 
         prompt=prompt,
