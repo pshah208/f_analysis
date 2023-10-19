@@ -49,8 +49,8 @@ topic = st.text_input("Enter the topic for your presentation:")
 retriever = vectorstore.as_retriever(k=1)
 qa = RetrievalQA.from_chain_type(llm=ChatOpenAI(openai_api_key=openai.api_key), chain_type="stuff", retriever=retriever)
 
-def generate_slide_titles(topic, qa):
-    prompt = f"Generate 5 slide titles for the topic '{topic}' and retrieve slide titles with the help of QA: '{qa}'."
+def generate_slide_titles(topic, vectorstore):
+    prompt = f"Generate 5 slide titles for the topic '{topic}' with only using documents from vectorstore: '{vectorstore}'."
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
@@ -99,7 +99,7 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic, qa)
+        slide_titles = generate_slide_titles(topic, vectorstore)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
         slide_contents = [generate_slide_content(title, qa) for title in filtered_slide_titles]
