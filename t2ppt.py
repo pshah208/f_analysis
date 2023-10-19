@@ -47,7 +47,7 @@ vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_
    
 topic = st.text_input("Enter the topic for your presentation:")
 retriever = vectorstore.as_retriever(k=1)
-qa = RetrievalQA.from_chain_type(llm=OpenAI(openai_api_key=openai.api_key), chain_type="stuff", retriever=retriever)
+qa = RetrievalQA.from_chain_type(llm=ChatOpenAI(openai_api_key=openai.api_key), chain_type="stuff", retriever=retriever)
 
 def generate_slide_titles(topic, qa):
     prompt = f"Generate 5 slide titles for the topic '{topic}' and retrieve slide titles with the help of QA: '{qa}'."
