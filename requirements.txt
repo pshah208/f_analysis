@@ -17,4 +17,3 @@ pypdf
 serpapi
 python-pptx
 faiss-cpu
-sqlite3==3.43.2
