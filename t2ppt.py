@@ -7,14 +7,14 @@ import os
 from dotenv import load_dotenv
 from langchain.document_loaders import DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Chroma
-from langchain.vectorstores import FAISS
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
-from langchain.chains import  ConversationalRetrievalChain
+
 load_dotenv()
 # Get an OpenAI API Key before continuing
-if "openai_api_key" in st.secrets:
+if "openai.api_key" in st.secrets:
     openai.api_key = st.secrets.openai_api_key
 else:
     openai.api_key = st.sidebar.text_input("OpenAI API Key", type="password")
@@ -28,39 +28,38 @@ topic = st.text_input("Enter the topic for your presentation:")
 TITLE_FONT_SIZE = Pt(30)
 SLIDE_FONT_SIZE = Pt(16)
 
-#creating a database
-def creating_db(topic):
-
-# Load documents from local directory
- loader = DirectoryLoader('./doc/', glob="**/[!.]*")
- docs = loader.load()
-
-
- splitter = RecursiveCharacterTextSplitter(
-    chunk_size=500,
+directory = "./docs/"
+def generate_slide_titles(topic, directory):
+  
+  loader = DirectoryLoader(directory, glob="**/[!.]*")
+  docs = loader.load()
+  splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
     chunk_overlap=20)
 
- documents = splitter.split_documents(docs)
+  documents = splitter.split_documents(docs)
+  
+  prompt_template = """
+  Generate 5 engaging slide titles for a powerpoint presentation about {topic} based on the content from these documents:
 
-# Create vector embeddings and store them in a vector database
- db = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
- return db
-llm = ChatOpenAI(openai_api_key=openai.api_key)
-db = creating_db(topic)
-#Retriever
-retriever = db.as_retriever
-memory = []
-qa = ConversationalRetrievalChain.from_llm(llm, verbose=False, retriever=retriever, chain_type="stuff", memory=memory)
-info = qa.run(topic)
+  {documents}
 
-def generate_slide_titles(topic, info):
-    prompt = f"Generate 5 slide titles for '{topic}' with the help of info:'{info}'."
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt, 
-        max_tokens=200,
-    )
-    return response['choices'][0]['text'].split("\n")
+  Slide 1 Title:
+  Slide 2 Title:
+  Slide 3 Title:
+  Slide 4 Title:
+  Slide 5 Title:
+  """
+  
+  llm = ChatOpenAI(openai_api_key=openai.api_key)
+  chain = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
+
+  result = chain.run(user_input=user_input, docs=documents)
+
+  # Parse the output into a list
+  titles = result.split("\n")
+
+  return titles
 
 def generate_slide_content(slide_title):
     prompt = f"Create content for : '{slide_title}' by using content only from information you find in the vector database:'{db}'."
@@ -103,7 +102,7 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic, info)
+        slide_titles = generate_slide_titles(topic, directory)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
         slide_contents = [generate_slide_content(title) for title in filtered_slide_titles]
