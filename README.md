@@ -4,4 +4,6 @@ This is a slight edit of the code prepared by AIAnytime. For my usecase I wanted
 
 For that I have edited the code that found on his github and instead of using Legacy openai.Completion function to create Slide Titles I am using Langchain repositories. It allows me to parse through the local documents and build ppt based on the information found there.
 
+Code is loading a variable called Directory - and reading the files inside a folder named 'doc'
+
 
