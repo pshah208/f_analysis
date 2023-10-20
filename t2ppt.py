@@ -62,7 +62,7 @@ def generate_slide_titles(topic, directory):
   return titles
 
 def generate_slide_content(slide_title):
-    prompt = f"Create content for : '{slide_title}' by using content only from information you find in the vector database:'{db}'."
+    prompt = f"Create content for : '{slide_title}' by using content only from information you find in the documents "
     response = openai.Completion.create(
         model="text-davinci-003", 
         prompt=prompt,
