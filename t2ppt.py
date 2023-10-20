@@ -11,7 +11,7 @@ from langchain.vectorstores import Chroma
 from langchain.vectorstores import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
-
+from langchain.chains import  ConversationalRetrievalChain
 load_dotenv()
 # Get an OpenAI API Key before continuing
 if "openai_api_key" in st.secrets:
@@ -28,25 +28,33 @@ topic = st.text_input("Enter the topic for your presentation:")
 TITLE_FONT_SIZE = Pt(30)
 SLIDE_FONT_SIZE = Pt(16)
 
+#creating a database
+def creating_db(topic):
+
 # Load documents from local directory
-loader = DirectoryLoader('./doc/', glob="**/[!.]*")
-docs = loader.load()
+ loader = DirectoryLoader('./doc/', glob="**/[!.]*")
+ docs = loader.load()
 
 
-splitter = RecursiveCharacterTextSplitter(
+ splitter = RecursiveCharacterTextSplitter(
     chunk_size=500,
     chunk_overlap=20)
 
-documents = splitter.split_documents(docs)
+ documents = splitter.split_documents(docs)
 
 # Create vector embeddings and store them in a vector database
-db = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
+ db = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
+ return db
 
+db = creating_db(topic)
 #Retriever
 retriever = db.as_retriever
+memory = []
+qa = ConversationalRetrievalChain.from_llm(vertex_ai, verbose=False, retriever=retriever, chain_type="stuff", memory=memory)
+info = qa.run(topic)
 
-def generate_slide_titles(topic):
-    prompt = f"Generate 5 slide titles for '{topic}'from the vector database."
+def generate_slide_titles(topic, info):
+    prompt = f"Generate 5 slide titles for '{topic}' with the help of info:'{info}'."
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt, 
@@ -95,7 +103,7 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic)
+        slide_titles = generate_slide_titles(topic, info)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
         slide_contents = [generate_slide_content(title) for title in filtered_slide_titles]
