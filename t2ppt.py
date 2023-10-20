@@ -43,13 +43,14 @@ splitter = RecursiveCharacterTextSplitter(
 documents = splitter.split_documents(docs)
 
 # Create vector embeddings and store them in a vector database
-vectorstore = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
+db = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
 
 #Retriever
-retriever = vectorstore.as_retriever(k=3, filter=None)
+retriever = db.as_retriever
+text = retriever.get_relevant_documents(topic)
 
-def generate_slide_titles(topic, vectorstore):
-    prompt = f"Generate 5 slide titles for '{topic}' by only using local database'{vectorstore}'."
+def generate_slide_titles(topic, text):
+    prompt = f"Generate 5 slide titles for '{topic}'from the texts'{text}'."
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt, 
@@ -57,8 +58,8 @@ def generate_slide_titles(topic, vectorstore):
     )
     return response['choices'][0]['text'].split("\n")
 
-def generate_slide_content(slide_title, retriever):
-    prompt = f"Create content for : '{slide_title}' by using content only from documents with help of Retriever: '{retriever}'."
+def generate_slide_content(slide_title, text):
+    prompt = f"Create content for : '{slide_title}' by using content only from information you find in the text: '{text}'."
     response = openai.Completion.create(
         model="text-davinci-003", 
         prompt=prompt,
@@ -98,10 +99,10 @@ def main():
 
     if generate_button and topic:
         st.info("Generating presentation... Please wait.")
-        slide_titles = generate_slide_titles(topic, vectorstore)
+        slide_titles = generate_slide_titles(topic, text)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
-        slide_contents = [generate_slide_content(title, retriever) for title in filtered_slide_titles]
+        slide_contents = [generate_slide_content(title, text) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
