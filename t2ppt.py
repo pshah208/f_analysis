@@ -47,7 +47,7 @@ db = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=o
 
 #Retriever
 retriever = db.as_retriever
-text = retriever.get_relevant_documents()
+text = RetrievalQA.from_llm(llm=ChatOpenAI, chain_type="stuff", retriever=retriever)
 
 def generate_slide_titles(topic, text):
     prompt = f"Generate 5 slide titles for '{topic}'from the texts'{text}'."
