@@ -11,9 +11,6 @@ from langchain.vectorstores import Chroma
 from langchain.vectorstores import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
-from langchain.chains.summarize import load_summarize_chain
-from langchain.chains import RetrievalQA
-import json
 
 load_dotenv()
 # Get an OpenAI API Key before continuing
