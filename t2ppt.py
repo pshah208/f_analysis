@@ -28,7 +28,7 @@ topic = st.text_input("Enter the topic for your presentation:")
 TITLE_FONT_SIZE = Pt(30)
 SLIDE_FONT_SIZE = Pt(16)
 
-directory = "./docs/"
+directory = "./doc/"
 def generate_slide_titles(topic, directory):
   
   loader = DirectoryLoader(directory, glob="**/[!.]*")
