@@ -54,7 +54,7 @@ def generate_slide_titles(topic, directory):
   llm = ChatOpenAI(openai_api_key=openai.api_key)
   chain = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
 
-  result = chain.run(user_input=user_input, docs=documents)
+  result = chain.run(topic=topic, documents=documents)
 
   # Parse the output into a list
   titles = result.split("\n")
