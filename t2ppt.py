@@ -47,7 +47,7 @@ db = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=o
 
 #Retriever
 retriever = db.as_retriever
-text = retriever.get_relevant_documents(topic)
+text = retriever.get_relevant_documents()
 
 def generate_slide_titles(topic, text):
     prompt = f"Generate 5 slide titles for '{topic}'from the texts'{text}'."
