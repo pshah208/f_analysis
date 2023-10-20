@@ -45,12 +45,12 @@ def creating_db(topic):
 # Create vector embeddings and store them in a vector database
  db = FAISS.from_documents(documents, embedding=OpenAIEmbeddings(openai_api_key=openai.api_key))                                   
  return db
-
+llm = ChatOpenAI(openai_api_key=openai.api_key)
 db = creating_db(topic)
 #Retriever
 retriever = db.as_retriever
 memory = []
-qa = ConversationalRetrievalChain.from_llm(vertex_ai, verbose=False, retriever=retriever, chain_type="stuff", memory=memory)
+qa = ConversationalRetrievalChain.from_llm(llm, verbose=False, retriever=retriever, chain_type="stuff", memory=memory)
 info = qa.run(topic)
 
 def generate_slide_titles(topic, info):
