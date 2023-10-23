@@ -33,6 +33,8 @@ TITLE_FONT_SIZE = Pt(30)
 SLIDE_FONT_SIZE = Pt(16)
 
 directory = "./doc/"
+llm = ChatOpenAI(openai_api_key=openai.api_key)
+
 def generate_slide_titles(topic, directory):
   
   loader = DirectoryLoader(directory, glob="**/[!.]*")
@@ -43,7 +45,7 @@ def generate_slide_titles(topic, directory):
 
   documents = splitter.split_documents(docs)
   
-  prompt_template = """
+  prompt_template1 = """
   Generate 5 engaging slide titles for a powerpoint presentation about {topic} based on the content from these documents:
 
   {documents}
@@ -55,10 +57,9 @@ def generate_slide_titles(topic, directory):
   Slide 5 Title:
   """
   
-  llm = ChatOpenAI(openai_api_key=openai.api_key)
-  chain = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
+  chain1 = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
 
-  result = chain.run(topic=topic, documents=documents)
+  result1 = chain.run(topic=topic, documents=documents)
 
   # Parse the output into a list
   titles = result.split("\n")
@@ -66,13 +67,29 @@ def generate_slide_titles(topic, directory):
   return titles
 
 def generate_slide_content(slide_title):
-    prompt = f"Create content for : '{slide_title}' by using content only from information you find in the documents "
-    response = openai.Completion.create(
-        model="text-davinci-003", 
-        prompt=prompt,
-        max_tokens=500,  # Adjust as needed based on the desired content length
-    )
-    return response['choices'][0]['text']
+  loader = DirectoryLoader(directory, glob="**/[!.]*")
+  docs = loader.load()
+  splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=20)
+
+  documents = splitter.split_documents(docs)
+  
+  prompt_template2 = """
+  Generate engaging content for slides based on the corresponding slide title by retrieving information from 
+
+  {documents}
+  """
+  
+  
+  chain2 = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
+
+  result2 = chain.run(topic=topic, documents=documents)
+
+  # Parse the output into a list
+  content1 = result.split("\n")
+
+  return content1
 
 
 def create_presentation(topic, slide_titles, slide_contents):
