@@ -44,7 +44,7 @@ def generate_slide_titles(topic, directory):
     chunk_overlap=20)
 
   documents1 = splitter.split_documents(docs)
-  
+  llm = ChatOpenAI(openai_api_key=openai.api_key)
   prompt_template1 = """
   Generate 5 engaging slide titles for a powerpoint presentation about {topic} based on the content from these documents:
 
