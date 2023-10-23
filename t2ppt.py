@@ -37,18 +37,18 @@ llm = ChatOpenAI(openai_api_key=openai.api_key)
 
 def generate_slide_titles(topic, directory):
   
-  loader = DirectoryLoader(directory, glob="**/[!.]*")
-  docs = loader.load()
+  loader1 = DirectoryLoader(directory, glob="**/[!.]*")
+  docs = loader1.load()
   splitter = RecursiveCharacterTextSplitter(
     chunk_size=1000,
     chunk_overlap=20)
 
-  documents = splitter.split_documents(docs)
+  documents1 = splitter.split_documents(docs)
   
   prompt_template1 = """
   Generate 5 engaging slide titles for a powerpoint presentation about {topic} based on the content from these documents:
 
-  {documents}
+  {documents1}
 
   Slide 1 Title:
   Slide 2 Title:
@@ -59,7 +59,7 @@ def generate_slide_titles(topic, directory):
   
   chain1 = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template1))
 
-  result1 = chain.run(topic=topic, documents=documents)
+  result1 = chain1.run(topic=topic, documents1=documents1)
 
   # Parse the output into a list
   titles = result1.split("\n")
@@ -67,13 +67,13 @@ def generate_slide_titles(topic, directory):
   return titles
 
 def generate_slide_content(slide_title, directory):
-  loader = DirectoryLoader(directory, glob="**/[!.]*")
-  docs = loader.load()
+  loader2 = DirectoryLoader(directory, glob="**/[!.]*")
+  docs = loader2.load()
   splitter = RecursiveCharacterTextSplitter(
     chunk_size=1000,
     chunk_overlap=20)
 
-  documents = splitter.split_documents(docs)
+  documents2 = splitter.split_documents(docs)
   
   prompt_template2 = """
   Generate engaging content for slides based on the corresponding slide title by retrieving information from 
@@ -84,7 +84,7 @@ def generate_slide_content(slide_title, directory):
   
   chain2 = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template2))
 
-  result2 = chain.run(topic=topic, documents=documents)
+  result2 = chain2.run(topic=topic, documents2=documents2)
 
   # Parse the output into a list
   content1 = result2.split("\n")
