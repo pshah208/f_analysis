@@ -33,7 +33,6 @@ TITLE_FONT_SIZE = Pt(30)
 SLIDE_FONT_SIZE = Pt(16)
 
 directory = "./doc/"
-llm = ChatOpenAI(openai_api_key=openai.api_key)
 
 def generate_slide_titles(topic, directory):
   
