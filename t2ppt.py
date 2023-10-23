@@ -61,7 +61,7 @@ def generate_slide_titles(topic, directory):
   result = chain.run(topic=topic, docs=docs)
 
   # Parse the output into a list
-  titles = result1.split("\n")
+  titles = result.split("\n")
 
   return titles
 
