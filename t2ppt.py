@@ -66,7 +66,7 @@ def generate_slide_titles(topic, directory):
 
   return titles
 
-def generate_slide_content(slide_title):
+def generate_slide_content(slide_title, directory):
   loader = DirectoryLoader(directory, glob="**/[!.]*")
   docs = loader.load()
   splitter = RecursiveCharacterTextSplitter(
@@ -126,7 +126,7 @@ def main():
         slide_titles = generate_slide_titles(topic, directory)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
-        slide_contents = [generate_slide_content(title) for title in filtered_slide_titles]
+        slide_contents = [generate_slide_content(title, directory) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
