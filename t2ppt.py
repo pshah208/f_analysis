@@ -66,30 +66,14 @@ def generate_slide_titles(topic, directory):
 
   return titles
 
-def generate_slide_content(slide_title, directory):
-  loader2 = DirectoryLoader(directory, glob="**/[!.]*")
-  docs = loader2.load()
-  splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1000,
-    chunk_overlap=20)
-
-  documents2 = splitter.split_documents(docs)
-  
-  prompt_template2 = """
-  Generate engaging content for slides based on the corresponding slide title by retrieving information from 
-
-  {documents}
-  """
-  
-  
-  chain2 = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template2))
-
-  result2 = chain2.run(topic=topic, documents2=documents2)
-
-  # Parse the output into a list
-  content1 = result2.split("\n")
-
-  return content1
+def generate_slide_content(slide_title):
+    prompt = f"Generate content for the slide: '{slide_title}' ."
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=500,  # Adjust as needed based on the desired content length
+    )
+    return response['choices'][0]['text']
 
 
 def create_presentation(topic, slide_titles, slide_contents):
@@ -126,7 +110,7 @@ def main():
         slide_titles = generate_slide_titles(topic, directory)
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
-        slide_contents = [generate_slide_content(title, directory) for title in filtered_slide_titles]
+        slide_contents = [generate_slide_content(title) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
