@@ -57,12 +57,12 @@ def generate_slide_titles(topic, directory):
   Slide 5 Title:
   """
   
-  chain1 = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
+  chain1 = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template1))
 
   result1 = chain.run(topic=topic, documents=documents)
 
   # Parse the output into a list
-  titles = result.split("\n")
+  titles = result1.split("\n")
 
   return titles
 
@@ -82,12 +82,12 @@ def generate_slide_content(slide_title, directory):
   """
   
   
-  chain2 = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
+  chain2 = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template2))
 
   result2 = chain.run(topic=topic, documents=documents)
 
   # Parse the output into a list
-  content1 = result.split("\n")
+  content1 = result2.split("\n")
 
   return content1
 
