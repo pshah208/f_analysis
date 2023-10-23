@@ -36,15 +36,15 @@ directory = "./doc/"
 
 def generate_slide_titles(topic, directory):
   
-  loader1 = DirectoryLoader(directory, glob="**/[!.]*")
-  docs = loader1.load()
+  loader = DirectoryLoader(directory, glob="**/[!.]*")
+  docs = loader.load()
   splitter = RecursiveCharacterTextSplitter(
     chunk_size=1000,
     chunk_overlap=20)
 
-  documents1 = splitter.split_documents(docs)
+  documents = splitter.split_documents(docs)
   llm = ChatOpenAI(openai_api_key=openai.api_key)
-  prompt_template1 = """
+  prompt_template = """
   Generate 5 engaging slide titles for a powerpoint presentation about {topic} based on the content from these documents:
 
   {documents1}
@@ -56,9 +56,9 @@ def generate_slide_titles(topic, directory):
   Slide 5 Title:
   """
   
-  chain1 = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template1))
+  chain1 = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
 
-  result1 = chain1.run(topic=topic, documents1=documents1)
+  result = chain.run(topic=topic, docs=docs)
 
   # Parse the output into a list
   titles = result1.split("\n")
