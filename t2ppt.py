@@ -47,18 +47,12 @@ def generate_slide_titles(topic, directory):
   prompt_template = """
   Generate 5 engaging slide titles for a powerpoint presentation about {topic} based on the content from these documents:
 
-  {documents1}
-
-  Slide 1 Title:
-  Slide 2 Title:
-  Slide 3 Title:
-  Slide 4 Title:
-  Slide 5 Title:
+  {documents}
   """
   
   chain1 = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
 
-  result = chain.run(topic=topic, docs=docs)
+  result = chain.run(topic=topic, documents=documents)
 
   # Parse the output into a list
   titles = result.split("\n")
