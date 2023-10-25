@@ -57,7 +57,8 @@ def generate_slide_content(slide_title):
  Generate 3 engaging points or content for each slide title {slide_title}. 
   Also generate a detailed prompt to create an image related to {slide_title}:
   """
-  
+  chain = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
+    
   output = chain.run(slide_title=slide_title)
 
   slide_content = output.split("\n")[0:3]
