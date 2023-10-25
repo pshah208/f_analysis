@@ -64,7 +64,7 @@ def generate_slide_content(slide_title):
 
 def generate_image(slide_title):
   prompt_template = """
-  Generate images for each slide based on the slide title {slide_title}. 
+  Generate images for {slide_title}. 
     """
   response = openai.Image.create(
         prompt=prompt,
