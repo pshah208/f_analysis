@@ -61,30 +61,29 @@ def generate_slide_content(slide_title):
     )
     return response['choices'][0]['text']
 
-def generate_image(slide_title):
-  prompt = f"Generate images for the slide:'{slide_title}' ."
-  response = openai.Image.create(
-        prompt=prompt,
-        n=1,
-        size="1024x1024", api_key=openai.api_key
-    )
+#def generate_image(slide_title):
+  #prompt = f"Generate images for the slide:'{slide_title}' ."
+#  response = openai.Image.create(
+     #   prompt=prompt,
+       # n=1,
+     #   size="1024x1024", api_key=openai.api_key    )
     
-  image_url = response['data'][0]['url']
+#  image_url = response['data'][0]['url']
 
-  return image_url
+ # return image_url
 
-def create_presentation(topic, slide_titles, slide_contents, images):
+def create_presentation(topic, slide_titles, slide_contents):
     prs = pptx.Presentation()
     slide_layout = prs.slide_layouts[1]
 
     title_slide = prs.slides.add_slide(prs.slide_layouts[0])
     title_slide.shapes.title.text = topic
 
-    for slide_title, slide_content, image_url in zip(slide_titles, slide_contents, images):
+    for slide_title, slide_content in zip(slide_titles, slide_contents):
         slide = prs.slides.add_slide(slide_layout)
         slide.shapes.title.text = slide_title
         slide.shapes.placeholders[1].text = slide_content
-        image = slide.shapes.add_picture(image_url, 0, 0)
+       # image = slide.shapes.add_picture(image_url, 0, 0)
 
         # Customize font size for titles and content
         slide.shapes.title.text_frame.paragraphs[0].font.size = TITLE_FONT_SIZE
@@ -107,7 +106,7 @@ def main():
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
         slide_contents = [generate_slide_content(title) for title in filtered_slide_titles]
-        images = [generate_image(title) for title in filtered_slide_titles]
+      #  images = [generate_image(title) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
         create_presentation(topic, filtered_slide_titles, slide_contents, images)
         print("Presentation generated successfully!")
