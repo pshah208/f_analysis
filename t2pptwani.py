@@ -11,6 +11,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
+from langchain.utilities.dalle_image_generator import DallEAPIWrapper
 
 load_dotenv()
 # Get an OpenAI API Key before continuing
@@ -32,8 +33,9 @@ topic = st.text_input("Enter the topic for your presentation:")
 TITLE_FONT_SIZE = Pt(30)
 SLIDE_FONT_SIZE = Pt(16)
 
-directory = "./doc/"
+
 llm = ChatOpenAI(openai_api_key=openai_api_key)
+dalle = DallEAPIWrapper()
 
 def generate_slide_titles(topic):
    
@@ -52,14 +54,18 @@ def generate_slide_titles(topic):
 
 def generate_slide_content(slide_title):
   prompt_template = """
-  Generate 3 engaging points or content for each slide title {slide_title}
+ Generate 3 engaging points or content for each slide title {slide_title}. 
+  Also generate a detailed prompt to create an image related to {slide_title}:
   """
   
-  chain = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
+  output = chain.run(slide_title=slide_title)
 
-  slide_content = chain.run(slide_title=slide_title)
+  slide_content = output.split("\n")[0:3]
+  image_prompt = output.split("\n")[-1]
 
-  return slide_content
+  image_url = dalle.run(image_prompt)
+
+  return slide_content, image_url
 
 def create_presentation(topic, slide_titles, slide_contents):
     prs = pptx.Presentation()
