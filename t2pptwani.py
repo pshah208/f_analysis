@@ -60,11 +60,6 @@ def generate_slide_content(slide_title):
     
   output = chain.run(slide_title=slide_title)
 
-  #slide_content = output.split("\n")[0:3]
-  #image_prompt = output.split("\n")[-1]
-
-  #image_url = dalle.run(image_prompt)
-
   return output
 
 def generate_image(slide_title):
@@ -86,7 +81,7 @@ def create_presentation(topic, slide_titles, slide_contents, images):
     title_slide = prs.slides.add_slide(prs.slide_layouts[0])
     title_slide.shapes.title.text = topic
 
-    for slide_title, slide_content, image in zip(slide_titles, slide_contents, images):
+    for slide_title, slide_content, image_url in zip(slide_titles, slide_contents, images):
         slide = prs.slides.add_slide(slide_layout)
         slide.shapes.title.text = slide_title
         slide.shapes.placeholders[1].text = slide_content
