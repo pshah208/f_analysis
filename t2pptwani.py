@@ -64,7 +64,7 @@ def generate_slide_content(slide_title):
   #slide_content = output.split("\n")[0:3]
   #image_prompt = output.split("\n")[-1]
 
-  image_url = dalle.run(image_prompt)
+  #image_url = dalle.run(image_prompt)
 
   return output, image_url
 
@@ -79,7 +79,7 @@ def create_presentation(topic, slide_titles, slide_contents):
         slide = prs.slides.add_slide(slide_layout)
         slide.shapes.title.text = slide_title
         slide.shapes.placeholders[1].text = slide_content
-        image = slide.shapes.add_picture(image_url, 0, 0)
+        #image = slide.shapes.add_picture(image_url, 0, 0)
 
         # Customize font size for titles and content
         slide.shapes.title.text_frame.paragraphs[0].font.size = TITLE_FONT_SIZE
