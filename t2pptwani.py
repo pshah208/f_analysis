@@ -60,9 +60,9 @@ def generate_slide_content(slide_title):
   result = chain.run(slide_title=slide_title)
 
   # Parse the output into a list
-  slide_contents = result.split("\n")
+  slide_content = result.split("\n")
 
-  return slide_contents
+  return slide_content
 
 def create_presentation(topic, slide_titles, slide_contents):
     prs = pptx.Presentation()
