@@ -15,11 +15,11 @@ from langchain.utilities.dalle_image_generator import DallEAPIWrapper
 
 load_dotenv()
 # Get an OpenAI API Key before continuing
-if "openai_api_key" in st.secrets:
-    openai_api_key = st.secrets.openai_api_key
+if "openai.api_key" in st.secrets:
+    openai.api_key = st.secrets.openai_api_key
 else:
-    openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
+    openai.api_key = st.sidebar.text_input("OpenAI API Key", type="password")
+if not openai.api_key:
     st.title("PPT Generator - Acharya")
     st.info("Enter an OpenAI API Key to continue")
     st.info("If you are not sure on how to get your OpenAI API key:")
@@ -34,8 +34,8 @@ TITLE_FONT_SIZE = Pt(30)
 SLIDE_FONT_SIZE = Pt(16)
 
 
-llm = ChatOpenAI(openai_api_key=openai_api_key)
-dalle = DallEAPIWrapper(openai_api_key=openai_api_key)
+llm = ChatOpenAI(openai_api_key=openai.api_key, max_tokens = 500)
+#dalle = DallEAPIWrapper(openai.api_key=openai_api_key)
 
 def generate_slide_titles(topic):
    
@@ -53,14 +53,13 @@ def generate_slide_titles(topic):
   return titles
 
 def generate_slide_content(slide_title):
-  prompt_template = """
- Generate 3 engaging points or content for each slide title {slide_title}. 
-    """
-  chain = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
-    
-  output = chain.run(slide_title=slide_title)
-
-  return output
+    prompt = f"Generate content for the slide: '{slide_title}' ."
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=500,  # Adjust as needed based on the desired content length
+    )
+    return response['choices'][0]['text']
 
 def generate_image(slide_title):
   prompt_template = """
@@ -69,7 +68,7 @@ def generate_image(slide_title):
   response = openai.Image.create(
         prompt=prompt,
         n=1,
-        size="1024x1024", api_key=openai_api_key
+        size="1024x1024", api_key=openai.api_key
     )
     
   image_url = response['data'][0]['url']
