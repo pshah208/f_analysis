@@ -68,7 +68,7 @@ def generate_slide_content(slide_title):
 
   return slide_content, image_url
 
-def create_presentation(topic, slide_titles, slide_contents, image):
+def create_presentation(topic, slide_titles, slide_contents):
     prs = pptx.Presentation()
     slide_layout = prs.slide_layouts[1]
 
@@ -103,7 +103,7 @@ def main():
         print("Slide Title: ", filtered_slide_titles)
         slide_contents = [generate_slide_content(title) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
-        create_presentation(topic, filtered_slide_titles, slide_contents, images)
+        create_presentation(topic, filtered_slide_titles, slide_contents)
         print("Presentation generated successfully!")
 
         st.success("Presentation generated successfully!")
