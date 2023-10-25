@@ -67,18 +67,30 @@ def generate_slide_content(slide_title):
 
   return output
 
-def create_presentation(topic, slide_titles, slide_contents):
+def generate_image(slide_title):
+  prompt_template = """
+ Generate images for each slide based on the slide title {slide_title}. 
+    """
+  chain = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
+    
+  output = chain.run(slide_title=slide_title)
+  
+  image_url = dalle.run(output)
+
+  return image_url
+
+def create_presentation(topic, slide_titles, slide_contents, images):
     prs = pptx.Presentation()
     slide_layout = prs.slide_layouts[1]
 
     title_slide = prs.slides.add_slide(prs.slide_layouts[0])
     title_slide.shapes.title.text = topic
 
-    for slide_title, slide_content in zip(slide_titles, slide_contents):
+    for slide_title, slide_content, image in zip(slide_titles, slide_contents, images):
         slide = prs.slides.add_slide(slide_layout)
         slide.shapes.title.text = slide_title
         slide.shapes.placeholders[1].text = slide_content
-        #image = slide.shapes.add_picture(image_url, 0, 0)
+        image = slide.shapes.add_picture(image_url, 0, 0)
 
         # Customize font size for titles and content
         slide.shapes.title.text_frame.paragraphs[0].font.size = TITLE_FONT_SIZE
@@ -101,8 +113,9 @@ def main():
         filtered_slide_titles= [item for item in slide_titles if item.strip() != '']
         print("Slide Title: ", filtered_slide_titles)
         slide_contents = [generate_slide_content(title) for title in filtered_slide_titles]
+        images = [generate_image(title) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
-        create_presentation(topic, filtered_slide_titles, slide_contents)
+        create_presentation(topic, filtered_slide_titles, slide_contents, images)
         print("Presentation generated successfully!")
 
         st.success("Presentation generated successfully!")
