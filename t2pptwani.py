@@ -57,10 +57,7 @@ def generate_slide_content(slide_title):
   
   chain = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
 
-  result = chain.run(slide_title=slide_title)
-
-  # Parse the output into a list
-  slide_content = result.split("\n")
+  slide_content = chain.run(slide_title=slide_title)
 
   return slide_content
 
