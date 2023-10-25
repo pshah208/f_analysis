@@ -103,7 +103,7 @@ def main():
         print("Slide Title: ", filtered_slide_titles)
         slide_contents = [generate_slide_content(title) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
-        create_presentation(topic, filtered_slide_titles, slide_contents)
+        create_presentation(topic, filtered_slide_titles, slide_contents, image)
         print("Presentation generated successfully!")
 
         st.success("Presentation generated successfully!")
