@@ -62,9 +62,7 @@ def generate_slide_content(slide_title):
     return response['choices'][0]['text']
 
 def generate_image(slide_title):
-  prompt = """
-  Generate images for {slide_title}. 
-    """
+  prompt = f"Generate images for the slide:'{slide_title}' ."
   response = openai.Image.create(
         prompt=prompt,
         n=1,
