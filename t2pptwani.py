@@ -60,7 +60,7 @@ def generate_slide_content(slide_title):
   result = chain.run(slide_title=slide_title)
 
   # Parse the output into a list
-  content = result.split("\n")
+  slide_contents = result.split("\n")
 
   return slide_contents
 
