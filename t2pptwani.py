@@ -61,12 +61,12 @@ def generate_slide_content(slide_title):
     
   output = chain.run(slide_title=slide_title)
 
-  slide_content = output.split("\n")[0:3]
-  image_prompt = output.split("\n")[-1]
+  #slide_content = output.split("\n")[0:3]
+  #image_prompt = output.split("\n")[-1]
 
   image_url = dalle.run(image_prompt)
 
-  return slide_content, image_url
+  return output, image_url
 
 def create_presentation(topic, slide_titles, slide_contents):
     prs = pptx.Presentation()
