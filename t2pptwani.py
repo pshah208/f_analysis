@@ -55,8 +55,7 @@ def generate_slide_titles(topic):
 def generate_slide_content(slide_title):
   prompt_template = """
  Generate 3 engaging points or content for each slide title {slide_title}. 
-  Also generate a detailed prompt to create an image related to {slide_title}:
-  """
+    """
   chain = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
     
   output = chain.run(slide_title=slide_title)
@@ -66,7 +65,7 @@ def generate_slide_content(slide_title):
 
   #image_url = dalle.run(image_prompt)
 
-  return output, image_url
+  return output
 
 def create_presentation(topic, slide_titles, slide_contents):
     prs = pptx.Presentation()
