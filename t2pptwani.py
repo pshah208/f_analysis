@@ -62,8 +62,7 @@ def generate_slide_content(slide_title):
   # Parse the output into a list
   content = result.split("\n")
 
-  return content
-
+  return slide_contents
 
 def create_presentation(topic, slide_titles, slide_contents):
     prs = pptx.Presentation()
@@ -89,8 +88,6 @@ def create_presentation(topic, slide_titles, slide_contents):
     
 
 def main():
-    
-    
     
     generate_button = st.button("Generate Presentation")
 
