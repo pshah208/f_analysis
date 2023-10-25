@@ -75,7 +75,7 @@ def create_presentation(topic, slide_titles, slide_contents):
     title_slide = prs.slides.add_slide(prs.slide_layouts[0])
     title_slide.shapes.title.text = topic
 
-    for slide_title, slide_content, image in zip(slide_titles, slide_contents, images):
+    for slide_title, slide_content in zip(slide_titles, slide_contents):
         slide = prs.slides.add_slide(slide_layout)
         slide.shapes.title.text = slide_title
         slide.shapes.placeholders[1].text = slide_content
