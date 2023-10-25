@@ -75,7 +75,7 @@ def create_presentation(topic, slide_titles, slide_contents, image):
     title_slide = prs.slides.add_slide(prs.slide_layouts[0])
     title_slide.shapes.title.text = topic
 
-    for slide_title, slide_content in zip(slide_titles, slide_contents):
+    for slide_title, slide_content, image in zip(slide_titles, slide_contents, images):
         slide = prs.slides.add_slide(slide_layout)
         slide.shapes.title.text = slide_title
         slide.shapes.placeholders[1].text = slide_content
@@ -103,7 +103,7 @@ def main():
         print("Slide Title: ", filtered_slide_titles)
         slide_contents = [generate_slide_content(title) for title in filtered_slide_titles]
         print("Slide Contents: ", slide_contents)
-        create_presentation(topic, filtered_slide_titles, slide_contents, image)
+        create_presentation(topic, filtered_slide_titles, slide_contents, images)
         print("Presentation generated successfully!")
 
         st.success("Presentation generated successfully!")
