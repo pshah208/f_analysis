@@ -64,13 +64,15 @@ def generate_slide_content(slide_title):
 
 def generate_image(slide_title):
   prompt_template = """
- Generate images for each slide based on the slide title {slide_title}. 
+  Generate images for each slide based on the slide title {slide_title}. 
     """
-  chain = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
+  response = openai.Image.create(
+        prompt=prompt,
+        n=1,
+        size="1024x1024", api_key=openai_api_key
+    )
     
-  output = chain.run(slide_title=slide_title)
-  
-  image_url = dalle.run(output)
+  image_url = response['data'][0]['url']
 
   return image_url
 
