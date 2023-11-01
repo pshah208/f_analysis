@@ -35,7 +35,7 @@ SLIDE_FONT_SIZE = Pt(16)
 
 
 llm = ChatOpenAI(openai_api_key=openai.api_key, max_tokens = 500)
-dalle = DallEAPIWrapper(openai.api_key=openai_api_key)
+dalle = DallEAPIWrapper(openai.api_key=openai.api_key)
 
 def generate_slide_titles(topic):
    
