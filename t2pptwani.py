@@ -56,7 +56,7 @@ def generate_slide_content(slide_title):
     text_prompt = f"Generate content for the slide: '{slide_title}' ."
     text_response = openai.Completion.create(
         engine="text-davinci-003",
-        prompt=prompt,
+        prompt=text_prompt,
         max_tokens=500,  # Adjust as needed based on the desired content length
     )
     content_text = text_response['choices'][0]['text']
