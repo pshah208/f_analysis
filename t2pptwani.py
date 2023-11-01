@@ -64,8 +64,8 @@ def generate_slide_content(slide_title):
     image_prompt = f"Generate an image for the slide: '{slide_title}' ."
     image_response = openai.Image.create(
         model="image-alpha-001",  # DALL·E model
-        prompts=[image_prompt],
-        n=1,  # Generate a single image
+        prompt=image_prompt
+          # Generate a single image
     )
     content_image = image_response['data'][0]['image']
 
