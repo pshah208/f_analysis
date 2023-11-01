@@ -35,7 +35,6 @@ SLIDE_FONT_SIZE = Pt(16)
 
 
 llm = ChatOpenAI(openai_api_key=openai.api_key, max_tokens = 500)
-#dalle = DallEAPIWrapper(openai.api_key=openai.api_key)
 
 def generate_slide_titles(topic):
    
@@ -60,16 +59,8 @@ def generate_slide_content(slide_title):
         max_tokens=500,  # Adjust as needed based on the desired content length
     )
     content_text = text_response['choices'][0]['text']
-     # Generate an image for the slide using DALL·E
-    image_prompt = f"Generate an image for the slide: '{slide_title}' ."
-    image_response = openai.Image.create(
-        model="image-alpha-001",  # DALL·E model
-        prompt=image_prompt
-          # Generate a single image
-    )
-    content_image = image_response['data'][0]['image']
-
-    return content_text, content_image
+  
+    return content_text
   
 
 def create_presentation(topic, slide_titles, slide_contents):
