@@ -35,7 +35,7 @@ SLIDE_FONT_SIZE = Pt(16)
 
 
 llm = ChatOpenAI(openai_api_key=openai.api_key, max_tokens = 500)
-#dalle = DallEAPIWrapper(openai.api_key=openai_api_key)
+dalle = DallEAPIWrapper(openai.api_key=openai_api_key)
 
 def generate_slide_titles(topic):
    
@@ -53,24 +53,24 @@ def generate_slide_titles(topic):
   return titles
 
 def generate_slide_content(slide_title):
-    prompt = f"Generate content for the slide: '{slide_title}' ."
-    response = openai.Completion.create(
+    text_prompt = f"Generate content for the slide: '{slide_title}' ."
+    text_response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
         max_tokens=500,  # Adjust as needed based on the desired content length
     )
-    return response['choices'][0]['text']
+    content_text = text_response['choices'][0]['text']
+     # Generate an image for the slide using DALL·E
+    image_prompt = f"Generate an image for the slide: '{slide_title}' ."
+    image_response = openai.Image.create(
+        model="image-alpha-001",  # DALL·E model
+        prompts=[image_prompt],
+        n=1,  # Generate a single image
+    )
+    content_image = image_response['data'][0]['image']
 
-#def generate_image(slide_title):
-  #prompt = f"Generate images for the slide:'{slide_title}' ."
-#  response = openai.Image.create(
-     #   prompt=prompt,
-       # n=1,
-     #   size="1024x1024", api_key=openai.api_key    )
-    
-#  image_url = response['data'][0]['url']
-
- # return image_url
+    return content_text, content_image
+  
 
 def create_presentation(topic, slide_titles, slide_contents):
     prs = pptx.Presentation()
